@@ -1,10 +1,6 @@
-from sqlalchemy import create_engine, Column, BIGINT, VARCHAR, SMALLINT, Integer, Date, delete
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
-
-DATABASE_URL = 'postgresql://postgres:0053@localhost:5432/postgres'
-engine = create_engine(DATABASE_URL)
-
-class Base(DeclarativeBase): pass
+from sqlalchemy import create_engine, Column, BIGINT, VARCHAR, SMALLINT, Integer, Date, ForeignKey, String
+from database import Base
+from sqlalchemy.orm import relationship
 
 class Doctor(Base):
     __tablename__ = 'Doctor'
@@ -13,7 +9,7 @@ class Doctor(Base):
     Name = Column(VARCHAR)
     Middle_name = Column(VARCHAR)
     Phone_number = Column(VARCHAR)
-    Section = Column(BIGINT)
+    ID_section = Column(BIGINT)
     Experience = Column(Integer)
 
 class Patient(Base):
@@ -25,7 +21,8 @@ class Patient(Base):
     Phone_number = Column(VARCHAR)
     Address = Column(VARCHAR)
     Age = Column(Integer)
-    ID_sex = Column(BIGINT)
+    ID_sex = Column(BIGINT, ForeignKey("Sex.ID"))
+
 
 class Section(Base):
     __tablename__ = 'Section'
@@ -64,5 +61,12 @@ class Diagnosis(Base):
     ID = Column(BIGINT, primary_key=True, index=True)
     Name = Column(VARCHAR)
 
-SessionLocal = sessionmaker(autoflush=False, bind=engine)
-db = SessionLocal()
+
+
+
+class User(Base):
+    __tablename__ = 'Users'
+
+    ID = Column(BIGINT, primary_key=True, index=True)
+    Username = Column(VARCHAR, unique=True, index=True)
+    Password = Column(VARCHAR)  # В реальном приложении пароли должны храниться в хэшированном виде
