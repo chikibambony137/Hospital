@@ -87,11 +87,20 @@ async def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
 
-@app.post("/login/")
+@app.post("/login")
 async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.Username == user.Username).first()
-    
+
     if (db_user.Password != user.Password):  # Проверка пароля
         raise HTTPException(status_code=400, detail="Incorrect password")
     
-    return {"message": "Login successful", "user_id": "", "success": True}
+    return {"message": "Login successful", "success": True}
+
+# @app.get("/patients_search/{surname}")
+# async def search(surname: str, db: Session = Depends(get_db)):
+#     try:
+#         patients = db.query(Patient).filter(Patient.Surname.ilike(f"%{surname}%")).all()
+#         return {"data": patients, "success": True}
+#     except:
+#         return {"data": "Error", "success": False}
+   

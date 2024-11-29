@@ -21,8 +21,13 @@ body {
     margin-bottom: 20px;
 }
 
+h1 {
+    text-align: center;
+}
+
 h2 {
     text-align: center;
+    margin: 20px;
 }
 
 h3 {
@@ -34,7 +39,7 @@ input[type="number"],
 input[type="date"],
 select,
 textarea {
-    width: calc(100% - 20px);
+    width: 75%;
     padding: 10px;
     margin-bottom: 10px;
 }
@@ -47,7 +52,7 @@ textarea {
     border: none;
     border-radius: 5px;
     text-align: center;
-    height: 50px;
+    height: 40px;
     margin: 10px;
 }
 
@@ -72,4 +77,37 @@ li:hover {
 .add-patient-form,
 .add-exam-form {
     margin-top: 20px;
+    
+}
+
+.patient-list {
+    width: 50%;
+    text-align: center;
+    background-color: #dedede;
+    border-radius: 20px;
+    
+}
+.patient-list2 {
+    width: 50%;
+    display: inline-block;
+}
+
+.patient-selected {
+    width: 50%;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+}
+
+.login {
+    width: 100px;
+    height: 40px;
+}
+
+.LoginForm {
+    width: 30%;
+    text-align: center;
+    background-color: #dedede;
+    border-radius: 20px;
+    margin: auto;
 }

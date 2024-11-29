@@ -32,21 +32,33 @@ class Patient(BaseModel):
         orm_mode = True
 
 class Section(BaseModel):
-    pass
+    ID: int
+    ID_patient: int
+    Number: int
 
 
 
 class Inspection(BaseModel):
-    pass
+    ID: int
+    ID_place: int
+    Date: date
+    ID_doctor: int
+    ID_patient: int
+    ID_symptoms: int
+    ID_diagnosis: int
+    Prescription: str
 
 class Place(BaseModel):
-    pass
+    ID: int
+    Name: str
 
 class Symptoms(BaseModel):
-    pass
+    ID: int
+    Name: str
 
 class Diagnosis(BaseModel):
-    pass
+    ID: int
+    Name: str
 
 
 class PatientAdd(BaseModel):
@@ -86,3 +98,8 @@ class DoctorAdd(BaseModel):
 class UserLogin(BaseModel):
     Username: str
     Password: str
+
+class FIO(BaseModel):
+    Surname: str
+    Name: str
+    Middle_name: str

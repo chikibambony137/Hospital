@@ -17,11 +17,11 @@ const Login = () => {
     }; 
  
     return ( 
-        <div> 
+        <div className='LoginForm'> 
             <h1>Авторизация</h1> 
-            <input type="text" placeholder="Логин" value={Username} onChange={e => setUsername(e.target.value)} /> 
-            <input type="password" placeholder="Пароль" value={Password} onChange={e => setPassword(e.target.value)} /> 
-            <button onClick={handleLogin}>Войти</button> 
+            <input type="text" placeholder="Логин" value={Username} onChange={e => setUsername(e.target.value)} /> <br/>
+            <input type="text" placeholder="Пароль" value={Password} onChange={e => setPassword(e.target.value)} /> <br/>
+            <button className='login' onClick={handleLogin}>Войти</button> 
         </div> 
     ); 
 }; 
