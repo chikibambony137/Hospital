@@ -1,9 +1,12 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import Base, Patient, Doctor, User
+from models import *
 from database import *
 import schemas
+
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jwt import create_access_token, verify_token
 
 app = FastAPI()
 
@@ -15,14 +18,67 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.post("/register")
+async def register(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = User(Username=form_data.username)
+    users = dict(db.query(User.ID, User.Username))
+
+    # проверка на наличие пользователя
+    for id in users:
+        if user.Username == users[id]:
+            raise HTTPException(status_code=409, detail='User is already registered!')
+            
+    user.set_password(form_data.password)
+    db.add(user)
+    db.commit()
+    return {"msg": "User created"} 
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.Username == form_data.username).first()
+    if not user or not user.verify_password(form_data.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(data={"sub": user.Username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get('/users')
+async def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
+
+# @app.get("/users/me")
+# async def read_users_me(token: str = Depends(oauth2_scheme)):
+#     payload = verify_token(token)
+#     if payload is None:
+#         raise HTTPException(status_code=401, detail="Invalid token")
+#     return {"username": payload["sub"]}
+
 @app.get("/")
 async def root():
     return {"ti": "ABOBA"}
 
 @app.get("/patients")
 async def get_patients(db: Session = Depends(get_db)):
-    return db.query(Patient).all()
-    # return db.query(Patient).join(Patient.ID_sex)
+    query = db.query(Patient, Sex.Name).join(Sex, Patient.ID_sex == Sex.ID).order_by(Patient.ID).all()
+    patient_list = [
+        {
+            "ID": patient.ID,
+            "Surname": patient.Surname,
+            "Name": patient.Name,
+            "Middle_name": patient.Middle_name,
+            "Sex": sex_name,
+            "Age": patient.Age,
+            "Phone_number": patient.Phone_number,
+            "Address": patient.Address
+        }
+        for patient, sex_name in query
+    ]
+    return patient_list
 
 @app.post("/patients/add", response_model=schemas.PatientAdd)
 async def add_patient(patient: schemas.PatientAdd, db: Session = Depends(get_db)):
@@ -63,12 +119,11 @@ async def add_doctor(doctor: schemas.DoctorAdd, db: Session = Depends(get_db)):
     db.add(new_doctor)
     db.commit()
     db.refresh(new_doctor)
-    print(new_doctor.ID)
     return new_doctor
 
 @app.delete('/doctors/delete')
 async def remove_doctor(ID_doctor: int, db: Session = Depends(get_db)):
-    deleted_doctor =  db.query(Doctor).filter(Doctor.ID == ID_doctor).delete()
+    deleted_doctor = db.query(Doctor).filter(Doctor.ID == ID_doctor).delete()
     db.commit()
     return deleted_doctor
 
@@ -77,24 +132,52 @@ async def get_doctor(doctor_id: int, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.ID == doctor_id).first()
     if doctor == None:
         raise HTTPException(status_code=404, detail='Doctor not found')
-    
 
+@app.get('/diagnosis')
+async def get_diagnosis(db: Session = Depends(get_db)):
+    return db.query(Diagnosis).all()
 
+@app.get('/symptoms')
+async def get_symptoms(db: Session = Depends(get_db)):
+    return db.query(Symptoms).all()
 
+@app.get('/inspections/{patient_id}')
+async def get_inspections(patient_id: int, db: Session = Depends(get_db)):
+    query = db.query(Inspection, Place.Name, Doctor.Surname, Patient.Surname, Diagnosis.Name, Symptoms.Name)
+    query = query.join(Place, Inspection.ID_place == Place.ID)\
+                .join(Doctor, Inspection.ID_doctor == Doctor.ID)\
+                .join(Patient, Inspection.ID_patient == Patient.ID)\
+                .join(Diagnosis, Inspection.ID_diagnosis == Diagnosis.ID)\
+                .join(Symptoms, Inspection.ID_symptoms == Symptoms.ID)\
+                .where(Inspection.ID_patient == patient_id).all()
+    inspection_list = [
+        {
+            "ID": inspection.ID,
+            "Place": place_name,
+            "Date": inspection.Date,
+            "Doctor": doctor_surname,
+            "Patient": patient_surname,
+            "Diagnosis": diagnosis_name,
+            "Symptoms": symptoms_name,
+            "Prescription": inspection.Prescription
+        }
+        for inspection, place_name, doctor_surname, patient_surname, diagnosis_name, symptoms_name in query
+    ]
+    return inspection_list
 
-@app.get('/users')
-async def get_users(db: Session = Depends(get_db)):
-    return db.query(User).all()
-
-
-@app.post("/login")
-async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.Username == user.Username).first()
-
-    if (db_user.Password != user.Password):  # Проверка пароля
-        raise HTTPException(status_code=400, detail="Incorrect password")
-    
-    return {"message": "Login successful", "success": True}
+@app.post("/inspections/add", response_model=schemas.InspectionAdd)
+async def add_inspection(inspection: schemas.InspectionAdd, db: Session = Depends(get_db)):
+    new_inspection = Inspection(Date = inspection.Date,
+                                ID_place = inspection.ID_place,
+                                ID_doctor = inspection.ID_doctor,
+                                ID_patient = inspection.ID_patient,
+                                ID_symptoms = inspection.ID_symptoms,
+                                ID_diagnosis = inspection.ID_diagnosis,
+                                Prescription = inspection.Prescription)
+    db.add(new_inspection)
+    db.commit()
+    db.refresh(new_inspection)
+    return new_inspection
 
 # @app.get("/patients_search/{surname}")
 # async def search(surname: str, db: Session = Depends(get_db)):

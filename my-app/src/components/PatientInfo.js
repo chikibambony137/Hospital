@@ -13,7 +13,7 @@ const PatientInfo = ({ patient, onShowPatients }) => {
             <p><strong>Телефон:</strong> {patient.Phone_number}</p>
             <p><strong>Адрес:</strong> {patient.Address}</p>
             <p><strong>Возраст:</strong> {patient.Age}</p>
-            <p><strong>Пол:</strong> {patient.ID_sex}</p>
+            <p><strong>Пол:</strong> {patient.Sex}</p>
             <button className="btn" onClick={handle} >Список осмотров</button>
         </div>
     );

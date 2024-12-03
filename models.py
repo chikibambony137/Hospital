@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine, Column, BIGINT, VARCHAR, SMALLINT, Integer, Date, ForeignKey, String
 from database import Base
-from sqlalchemy.orm import relationship
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Doctor(Base):
     __tablename__ = 'Doctor'
@@ -53,7 +55,7 @@ class Place(Base):
 
 class Symptoms(Base):
     __tablename__ = 'Symptoms'
-    ID = Column(BIGINT, primary_key=True, index=True)
+    ID = Column(BIGINT, primary_key=True, index=True) 
     Name = Column(VARCHAR)
 
 class Diagnosis(Base):
@@ -61,12 +63,16 @@ class Diagnosis(Base):
     ID = Column(BIGINT, primary_key=True, index=True)
     Name = Column(VARCHAR)
 
-
-
-
 class User(Base):
     __tablename__ = 'Users'
 
     ID = Column(BIGINT, primary_key=True, index=True)
-    Username = Column(VARCHAR, unique=True, index=True)
-    Password = Column(VARCHAR)  # В реальном приложении пароли должны храниться в хэшированном виде
+    Username = Column(VARCHAR, unique=True)
+
+    Hashed_password = Column(VARCHAR)
+
+    def set_password(self, password: str):
+        self.Hashed_password = pwd_context.hash(password)
+
+    def verify_password(self, password: str):
+        return pwd_context.verify(password, self.Hashed_password)

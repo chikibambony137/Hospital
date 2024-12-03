@@ -92,14 +92,11 @@ class DoctorAdd(BaseModel):
             raise ValueError('Номер телефона должен начинаться с "+" и содержать от 1 до 15 цифр')
         return values
     
-
-
-
-class UserLogin(BaseModel):
-    Username: str
-    Password: str
-
-class FIO(BaseModel):
-    Surname: str
-    Name: str
-    Middle_name: str
+class InspectionAdd(BaseModel):
+    Date: date = Field(default="2000-01-01", description="Дата осмотра")
+    ID_place: int = Field(default=..., ge=1, description="ID места осмотра")
+    ID_doctor: int = Field(default=..., ge=1, description="ID врача")
+    ID_patient: int = Field(default=..., ge=1, description="ID пациента")
+    ID_symptoms: int = Field(default=..., ge=1, description="ID симптома")
+    ID_diagnosis: int = Field(default=..., ge=1, description="ID диагноза")
+    Prescription: str = Field(default=..., min_length=1, max_length=300, description="Предписания пациенту")
