@@ -3,16 +3,16 @@ import axios from 'axios';
 import AddPatient from './AddPatient';
 import PatientExams from './PatientExams';
 import PatientInfo from './PatientInfo';
+import { useNavigate } from 'react-router-dom'; 
 
-const PatientsList = ({ doctorId, onBack }) => {
-
-    const [Surname, setSurname] = useState()
-    const [Name, setName] = useState()
-    const [Middle_name, setMiddle_name] = useState()
-    const [showExams, setShowExams] = useState(null);
+const PatientsList = () => {
+    const [surname, setSurname] = useState('');
+    const [name, setName] = useState('');
+    const [middleName, setMiddleName] = useState('');
     const [patients, setPatients] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [selectedPatient, setSelectedPatient] = useState();
     const [showPatients, setShowPatients] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const searchPatients = async () => {
@@ -26,6 +26,20 @@ const PatientsList = ({ doctorId, onBack }) => {
         searchPatients();
     }, []);
 
+    const handleSearch = () => {
+        return patients.filter(patient => 
+            patient.Surname.toLowerCase().includes(surname.toLowerCase()) &&
+            patient.Name.toLowerCase().includes(name.toLowerCase()) &&
+            patient.Middle_name.toLowerCase().includes(middleName.toLowerCase())
+        );
+    };
+
+    const handleAdd = () => {
+        navigate('/patients/add')
+    };
+
+    const filteredPatients = handleSearch();
+
     return (
         <div className="patient-list">
             <h2>Список пациентов</h2>
@@ -33,53 +47,43 @@ const PatientsList = ({ doctorId, onBack }) => {
             <input 
                 type="text" 
                 placeholder="Фамилия" 
-                value={Surname} 
+                value={surname} 
                 onChange={(e) => setSurname(e.target.value)} 
             />
             <input 
                 type="text" 
                 placeholder="Имя" 
-                value={Name} 
+                value={name} 
                 onChange={(e) => setName(e.target.value)} 
             />
             <input 
                 type="text" 
                 placeholder="Отчество" 
-                value={Middle_name} 
-                onChange={(e) => setMiddle_name(e.target.value)} 
+                value={middleName} 
+                onChange={(e) => setMiddleName(e.target.value)} 
             />
             <br/>
-            {<button className="btn">Найти</button>}
-            <button className="btn" onClick={onBack}>Назад</button>
-            <button className="btn">Добавить пациента</button>
+            <button className="list">Найти</button>
+            <button className="list">Назад</button>
+            <button className="list" onClick={handleAdd}>Добавить</button>
             <br/>
             
             <div className="patient-list2">
-            <ul>
-                {patients.map((patient) => (
-                    <li key={patient.ID} onClick={() => setSelectedPatient(patient)}>
-                        {patient.Surname} {patient.Name} {patient.Middle_name}
-                    </li>
-                ))}
-            </ul>
+                <ul>
+                    {filteredPatients.map((patient) => (
+                        <li key={patient.ID} onClick={() => setSelectedPatient(patient)}>
+                            {patient.Surname} {patient.Name} {patient.Middle_name}
+                        </li>
+                    ))}
+                </ul>
             </div>
             <div className="patient-selected">
-                
-                    {selectedPatient && (
-                        <PatientInfo patient={selectedPatient} onShowPatients={() => setShowPatients(true)} />
-                    )}
-
-                {showPatients && selectedPatient && (
-                    <PatientsList doctorId={selectedPatient.id} onBack={() => setShowPatients(false)} />
-                )} 
-
-                {/* <AddPatient doctorId={doctorId} onPatientAdded={fetchPatients} /> */}
-                {showExams && (
-                    <PatientExams patientId={showExams.id} onBack={() => setShowExams(null)} />
+                {selectedPatient && (
+                    <PatientInfo patient={selectedPatient} onShowPatients={() => setShowPatients(true)} />
                 )}
             </div>
         </div>
-);
+    );
 };
 
 export default PatientsList;

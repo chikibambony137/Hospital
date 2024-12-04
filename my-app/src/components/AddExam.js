@@ -32,9 +32,9 @@ const AddExam = ({ patientId, onExamAdded }) => {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
             <input type="text" placeholder="Место осмотра" value={location} onChange={(e) => setLocation(e.target.value)} required />
             <input type="text" placeholder="Врач" value={doctor} onChange={(e) => setDoctor(e.target.value)} required />
-            <textarea placeholder="Симптомы" value={symptoms} onChange={(e) => setSymptoms(e.target.value)} required></textarea>
-            <textarea placeholder="Диагноз" value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} required></textarea>
-            <textarea placeholder="Предписание" value={prescription} onChange={(e) => setPrescription(e.target.value)} required></textarea>
+            <input type="text" placeholder="Симптомы" value={symptoms} onChange={(e) => setSymptoms(e.target.value)} required/>
+            <input type="text" placeholder="Диагноз" value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} required/>
+            <input type="text" placeholder="Предписание" value={prescription} onChange={(e) => setPrescription(e.target.value)} required/>
             <button type="submit" className="btn">Добавить</button>
         </form>
     );

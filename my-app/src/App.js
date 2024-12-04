@@ -5,6 +5,7 @@ import DoctorsList from './components/DoctorsList';
 import PatientsList from './components/PatientsList'; 
 import PatientExams from './components/PatientExams';
 import styles from './styles.css'
+import AddPatient from './components/AddPatient';
  
 const App = () => { 
     return ( 
@@ -12,8 +13,9 @@ const App = () => {
             <Routes> 
                 <Route path="/" element={<Login />} /> 
                 <Route path="/doctors" element={<DoctorsList />} /> 
-                <Route path="/patients" element={<PatientsList />} /> 
-                <Route path="/patients/:id" element={<PatientExams />} /> 
+                <Route path="/patients" element={<PatientsList />} />
+                <Route path="/patients/add" element={<AddPatient />} /> 
+                <Route path="/inspections" element={<PatientExams />} />
             </Routes> 
         </Router> 
     ); 

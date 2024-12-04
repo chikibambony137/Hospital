@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddExam from './AddExam';
+import { useLocation } from 'react-router-dom';
 
-const PatientExams = ({ patientId, onBack }) => {
-    const [exams, setExams] = useState([]);
-
+const PatientExams = () => {
+    const [inspections, setInspections] = useState([]);
+    const location = useLocation();
+    const { patientId } = location.state || {};
   
     const fetchExams = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/' + patientId);
-            setExams(response.data);
+            const response = await axios.get('http://localhost:8000/inspections/' + patientId);
+            setInspections(response.data);
         } catch (error) {
-            console.error(error);
+            alert('Error: ' + patientId);
         }
     };
 
@@ -20,18 +22,27 @@ const PatientExams = ({ patientId, onBack }) => {
     }, [patientId]);
 
     return (
-        <div className="patient-exams">
+        <div className="patient-list">
             <h2>Осмотры пациента</h2>
-            <AddExam patientId={patientId} onExamAdded={fetchExams} />
             <ul>
-                {exams.map((exam) => (
-                    <li key={exam.id}>
-                        Осмотр №{exam.id}, Дата: {exam.date}, Место: {exam.location}, Врач: {exam.doctor}, Симптомы: {exam.symptoms}, Диагноз: {exam.diagnosis}, Предписание: {exam.prescription}
+                {inspections.map((inspection) => (
+                    <li key={inspection.id}>
+                        Осмотр №{inspection.ID}, Дата осмотра: {inspection.Date}, Место: {inspection.Place} <br/>
+                        Врач: {inspection.Doctor}, Пациент: {inspection.Patient} <br/>
+                        Симптомы: {inspection.Symptoms} <br/>
+                        Диагноз: {inspection.Diagnosis} <br/>
+                        Предписание: {inspection.Prescription}
                     </li>
                 ))}
             </ul>
-            <button className="btn" onClick={onBack}>Назад</button>
+            <div className="patient-selected">
+            <ul>
+                <AddExam patientId={patientId} onExamAdded={fetchExams} />
+            </ul>
+            </div>
+            <button className="btn" >Назад</button>
         </div>
+        
     );
 };
 

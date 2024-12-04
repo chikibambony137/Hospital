@@ -68,7 +68,7 @@ class PatientAdd(BaseModel):
     Phone_number: str = Field(default='+77777777777', description="Номер телефона в международном формате, начинающийся с '+'")
     Address: str = Field(default='г. Москва, ул. Пушкина, 15, кв. 52', min_length=5, max_length=200, description="Адрес пациента, не более 200 символов")
     Age: int = Field(default=0, ge=0, le=120, description="Возраст пациента ()")
-    ID_sex: int = Field(default=1, ge=1, le=2, description="Пол пациента")
+    ID_sex: int = Field(default=2, ge=1, le=2, description="Пол пациента")
 
     @field_validator("Phone_number")
     @classmethod

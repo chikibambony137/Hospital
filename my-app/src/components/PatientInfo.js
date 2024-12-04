@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const PatientInfo = ({ patient, onShowPatients }) => {
     const navigate = useNavigate();
     const handle = async () => { 
-            navigate('/inspections'); 
+            navigate('/inspections', { state: { patientId: patient.ID } }); 
     }; 
     return (
         <div className="patient-info">
