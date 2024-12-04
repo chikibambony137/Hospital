@@ -88,7 +88,7 @@ async def add_patient(patient: schemas.PatientAdd, db: Session = Depends(get_db)
                           Phone_number = patient.Phone_number,
                           Address = patient.Address,
                           Age = patient.Age,
-                          ID_sex = int(patient.ID_sex))
+                          ID_sex = patient.ID_sex)
     db.add(new_patient)
     db.commit()
     db.refresh(new_patient)

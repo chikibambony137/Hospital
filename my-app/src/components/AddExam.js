@@ -1,42 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, replace, useHref } from 'react-router-dom';
 
-const AddExam = ({ patientId, onExamAdded }) => {
-    const [date, setDate] = useState('');
-    const [location, setLocation] = useState('');
-    const [doctor, setDoctor] = useState('');
-    const [symptoms, setSymptoms] = useState('');
-    const [diagnosis, setDiagnosis] = useState('');
-    const [prescription, setPrescription] = useState('');
+const AddExam = ({ patientId }) => {
+    const [Date, setDate] = useState('');
+    const [ID_place, setPlace] = useState('');
+    const [ID_doctor, setDoctor] = useState('');
+    const [ID_patient, setPatient] = useState('');
+    const [ID_symptoms, setSymptoms] = useState('');
+    const [ID_diagnosis, setDiagnosis] = useState('');
+    const [Prescription, setPrescription] = useState('');
+    const [symptomOptions, setSymptomOptions] = useState([]);
+    const [diagnosisOptions, setDiagnosisOptions] = useState([]);
+    const [doctorOptions, setDoctorOptions] = useState([]);
+
+    const location = useLocation();
+    const href = useHref();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const symptomsResponse = await axios.get('http://localhost:8000/symptoms');
+                setSymptomOptions(symptomsResponse.data);
+                const diagnosesResponse = await axios.get('http://localhost:8000/diagnosis');
+                setDiagnosisOptions(diagnosesResponse.data);
+                const doctorResponse = await axios.get('http://localhost:8000/doctors');
+                setDoctorOptions(doctorResponse.data);
+                setPatient(patientId);
+            } catch (error) {
+                alert("Ошибка при загрузке данных: ", error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/exams', { date, location, doctor, symptoms, diagnosis, prescription, patientId });
-            onExamAdded();
-            // Reset form fields after submission
+            
+            await axios.post('http://localhost:8000/inspections/add', { Date, ID_place, ID_doctor, ID_patient,
+                                            ID_symptoms, ID_diagnosis, Prescription });
+            // Сбросить поля формы после отправки
             setDate('');
-            setLocation('');
+            setPlace('');
             setDoctor('');
             setSymptoms('');
             setDiagnosis('');
             setPrescription('');
+            window.location.reload()
         } catch (error) {
-            console.error(error);
+            alert('hui' + error)
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="add-exam-form">
+        <div className="inspection-add-form">
             <h3>Добавить осмотр</h3>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-            <input type="text" placeholder="Место осмотра" value={location} onChange={(e) => setLocation(e.target.value)} required />
-            <input type="text" placeholder="Врач" value={doctor} onChange={(e) => setDoctor(e.target.value)} required />
-            <input type="text" placeholder="Симптомы" value={symptoms} onChange={(e) => setSymptoms(e.target.value)} required/>
-            <input type="text" placeholder="Диагноз" value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} required/>
-            <input type="text" placeholder="Предписание" value={prescription} onChange={(e) => setPrescription(e.target.value)} required/>
-            <button type="submit" className="btn">Добавить</button>
-        </form>
+            <input type="date" value={Date} onChange={(e) => setDate(e.target.value)} required />
+            <select type="number" value={ID_place} onChange={(e) => setPlace(e.target.value)} required>
+                <option value="">Выберите место осмотра</option>
+                <option value="1">На дому</option>
+                <option value="2">Поликлиника</option>
+            </select>
+            <select value={ID_doctor} onChange={(e) => setDoctor(e.target.value)} required>
+                <option value="">Выберите врача</option>
+                {doctorOptions.map((doctor) => (
+                    <option key={doctor.ID} value={doctor.ID}>{doctor.Surname} {doctor.Name} {doctor.Middle_name}</option>
+                ))}
+            </select>
+            <select value={ID_symptoms} onChange={(e) => setSymptoms(e.target.value)} required>
+                <option value="">Выберите симптомы</option>
+                {symptomOptions.map((symptom) => (
+                    <option key={symptom.ID} value={symptom.ID}>{symptom.Name} </option>
+                ))}
+            </select>
+            <select value={ID_diagnosis} onChange={(e) => setDiagnosis(e.target.value)} required>
+                <option value="">Выберите диагноз</option>
+                {diagnosisOptions.map((diagnos) => (
+                    <option key={diagnos.ID} value={diagnos.ID}>{diagnos.Name}</option>
+                ))}
+            </select>
+            <input type="text" placeholder="Предписание" value={Prescription} onChange={(e) => setPrescription(e.target.value)} required/>
+            <button type="submit" onClick={handleSubmit} className="btn">Добавить</button>
+        </div>
     );
 };
 

@@ -68,7 +68,7 @@ class PatientAdd(BaseModel):
     Phone_number: str = Field(default='+77777777777', description="Номер телефона в международном формате, начинающийся с '+'")
     Address: str = Field(default='г. Москва, ул. Пушкина, 15, кв. 52', min_length=5, max_length=200, description="Адрес пациента, не более 200 символов")
     Age: int = Field(default=0, ge=0, le=120, description="Возраст пациента ()")
-    ID_sex: int = Field(default=2, ge=1, le=2, description="Пол пациента")
+    ID_sex: int = Field(default=..., ge=1, le=2, description="Пол пациента")
 
     @field_validator("Phone_number")
     @classmethod
@@ -94,9 +94,9 @@ class DoctorAdd(BaseModel):
     
 class InspectionAdd(BaseModel):
     Date: date = Field(default="2000-01-01", description="Дата осмотра")
-    ID_place: int = Field(default=..., ge=1, description="ID места осмотра")
-    ID_doctor: int = Field(default=..., ge=1, description="ID врача")
-    ID_patient: int = Field(default=..., ge=1, description="ID пациента")
-    ID_symptoms: int = Field(default=..., ge=1, description="ID симптома")
-    ID_diagnosis: int = Field(default=..., ge=1, description="ID диагноза")
-    Prescription: str = Field(default=..., min_length=1, max_length=300, description="Предписания пациенту")
+    ID_place: int = Field(default=1, ge=1, description="ID места осмотра")
+    ID_doctor: int = Field(default=1, ge=1, description="ID врача")
+    ID_patient: int = Field(default=1, ge=1, description="ID пациента")
+    ID_symptoms: int = Field(default=1, ge=1, description="ID симптома")
+    ID_diagnosis: int = Field(default=1, ge=1, description="ID диагноза")
+    Prescription: str = Field(default="...", min_length=1, max_length=300, description="Предписания пациенту")

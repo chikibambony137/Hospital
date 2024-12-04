@@ -27,7 +27,7 @@ const PatientExams = () => {
             <ul>
                 {inspections.map((inspection) => (
                     <li key={inspection.id}>
-                        Осмотр №{inspection.ID}, Дата осмотра: {inspection.Date}, Место: {inspection.Place} <br/>
+                        ID: {inspection.ID}, Дата осмотра: {inspection.Date}, Место: {inspection.Place} <br/>
                         Врач: {inspection.Doctor}, Пациент: {inspection.Patient} <br/>
                         Симптомы: {inspection.Symptoms} <br/>
                         Диагноз: {inspection.Diagnosis} <br/>
@@ -35,7 +35,7 @@ const PatientExams = () => {
                     </li>
                 ))}
             </ul>
-            <div className="patient-selected">
+            <div>
             <ul>
                 <AddExam patientId={patientId} onExamAdded={fetchExams} />
             </ul>

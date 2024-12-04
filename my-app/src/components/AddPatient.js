@@ -8,13 +8,13 @@ const AddPatient = () => {
     const [Phone_number, setPhone_number] = useState('');
     const [Address, setAddress] = useState('');
     const [Age, setAge] = useState('');
-    const [Sex, setSex] = useState(0);
+    const [ID_sex, setSex] = useState('');
     
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8000/patients/add', { Surname, Name, Middle_name, Phone_number, Address, Age, Sex});
+            await axios.post('http://localhost:8000/patients/add', { Surname, Name, Middle_name, Phone_number, Address, Age, ID_sex});
             setSurname('');
             setName('');
             setMiddle_name('');
@@ -22,7 +22,7 @@ const AddPatient = () => {
             setAddress('');
             setAge('');
             setSex(0);
-            alert('Пациент успешно добавлен!')
+            alert('Пациент успешно добавлен!' + ID_sex)
         } catch (error) {
             console.error(error);
         }
@@ -38,7 +38,7 @@ const AddPatient = () => {
             <input type="text" placeholder="Адрес" value={Address} onChange={(e) => setAddress(e.target.value)} required />
             <input type="number" placeholder="Возраст" value={Age} onChange={(e) => setAge(e.target.value)} required />
 
-            <select type="number" value={Sex} onChange={(e) => setSex(parseInt(e.target.value))} required>
+            <select type="number" value={ID_sex} onChange={(e) => setSex(e.target.value)} required>
                 <option value="">Выберите пол</option>
                 <option value="1">Женский</option>
                 <option value="2">Мужской</option>
