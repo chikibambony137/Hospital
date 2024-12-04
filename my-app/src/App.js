@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login'; 
 import DoctorsList from './components/DoctorsList'; 
 import PatientsList from './components/PatientsList'; 
-import PatientExams from './components/PatientExams';
 import styles from './styles.css'
 import AddPatient from './components/AddPatient';
+import PatientInspections from './components/PatientInspections';
  
 const App = () => { 
     return ( 
@@ -15,7 +15,7 @@ const App = () => {
                 <Route path="/doctors" element={<DoctorsList />} /> 
                 <Route path="/patients" element={<PatientsList />} />
                 <Route path="/patients/add" element={<AddPatient />} /> 
-                <Route path="/inspections" element={<PatientExams />} />
+                <Route path="/inspections" element={<PatientInspections />} />
             </Routes> 
         </Router> 
     ); 

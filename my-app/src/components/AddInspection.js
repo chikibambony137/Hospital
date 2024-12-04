@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, replace, useHref } from 'react-router-dom';
 
-const AddExam = ({ patientId }) => {
+const AddInspection = ({ patientId }) => {
     const [Date, setDate] = useState('');
     const [ID_place, setPlace] = useState('');
     const [ID_doctor, setDoctor] = useState('');
@@ -86,4 +86,4 @@ const AddExam = ({ patientId }) => {
     );
 };
 
-export default AddExam;
+export default AddInspection;

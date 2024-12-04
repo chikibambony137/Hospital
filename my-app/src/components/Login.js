@@ -11,7 +11,7 @@ const Login = () => {
 
     const handleLogin = async () => { 
         try {
-            const response = await axios.post('http://localhost:8000/token', new URLSearchParams({
+            const response = await axios.post('http://localhost:8000/login', new URLSearchParams({
                 username: Username,
                 password: Password,
             }), {
@@ -21,7 +21,7 @@ const Login = () => {
             });
             navigate('/doctors')
         } catch (error) {
-            alert('Неверный логин или пароль. ' + (error.response?.data?.detail || '')); 
+            alert('Ошибка! ' + (error.response?.data?.detail || '')); 
         } 
     };
 
@@ -47,6 +47,7 @@ const Login = () => {
             <input type="text" placeholder="Логин" value={Username} onChange={e => setUsername(e.target.value)} /> <br/>
             <input type="text" placeholder="Пароль" value={Password} onChange={e => setPassword(e.target.value)} /> <br/>
             <button className='login' onClick={handleLogin}>Войти</button> <br/>
+            
 
             <h1>Регистрация</h1> 
             <input type="text" placeholder="Логин" value={Username2} onChange={e => setUsername2(e.target.value)} /> <br/>

@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field, field_validator, ValidationErro
 from datetime import date, datetime
 import re
 from enum import Enum
+from fastapi import HTTPException
 
 class Sex(BaseModel):
     ID: int
@@ -35,8 +36,6 @@ class Section(BaseModel):
     ID: int
     ID_patient: int
     Number: int
-
-
 
 class Inspection(BaseModel):
     ID: int
@@ -100,3 +99,37 @@ class InspectionAdd(BaseModel):
     ID_symptoms: int = Field(default=1, ge=1, description="ID симптома")
     ID_diagnosis: int = Field(default=1, ge=1, description="ID диагноза")
     Prescription: str = Field(default="...", min_length=1, max_length=300, description="Предписания пациенту")
+
+def register_check(username, password, users):
+    
+    # Убираем лишние пробелы
+    username = username.strip()  
+    password = password.strip()
+
+    # Проверка на пустой логин
+    if not username:
+        raise HTTPException(status_code=400, detail="Логин не может быть пустым!")
+    
+    # Проверка на пустой пароль
+    if not password:
+        raise HTTPException(status_code=400, detail="Пароль не может быть пустым!")
+
+    if len(username) < 5:
+        raise HTTPException(status_code=400, detail="Логин должен иметь минимум 5 символов!")
+    
+    if len(password) < 5:
+        raise HTTPException(status_code=400, detail="Пароль должен иметь минимум 5 символов!")
+    
+    LOGIN_REGEX = r'^[\wа-яА-Я][\wа-яА-Я._-]{4,}$'
+    if not re.match(LOGIN_REGEX, username):
+        raise HTTPException(
+            status_code=400,
+            detail="Логин должен начинаться с буквы и иметь только буквы, цифры, подчеркивания, точки или тире."
+        )
+
+    # Проверка на наличие пользователя
+    for id in users:
+        if username == users[id]:
+            raise HTTPException(status_code=409, detail='Данный пользователь уже зарегистрирован!')
+        
+    return True

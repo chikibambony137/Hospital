@@ -270,3 +270,44 @@ li:hover {
     box-shadow: 0px 0px 8px #777;
     background: rgba(255, 255, 255, 0.6);
 }
+
+.inspection-list{
+    width: 100%;
+    word-wrap: break-word;
+    text-align: left;
+}
+.bth-doctor_list{
+
+    width: 20%;
+	height: 10%;
+	justify-content: left;
+
+	color: #363636;
+	background: #a6e6a7;
+	font-size: 35px;
+	font-weight: bold;
+	margin-top: 10px;
+    margin-bottom: 30px;
+    margin-right: 100%;
+	outline: none;
+	border: none;
+	border-radius: 50px;
+	transition: .2s ease-in;
+	cursor: pointer;
+    font: Ubuntu Sans;
+   
+}
+.bth-doctor_list:hover{
+
+    background: #7ec0aa;
+    -webkit-animation: rubberBand 0.6s ease;
+    animation: rubberBand 0.6s ease;
+    
+    @keyframes rubberBand {
+    0% {transform: scale(1);}
+    30% {transform: scaleX(1.05) scaleY(0.85);}
+    40% {transform: scaleX(0.85) scaleY(1.10);}
+    60% {transform: scaleX(1.05) scaleY(0.95);}
+    100% {transform: scale(1);}
+    }
+}

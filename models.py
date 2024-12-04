@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, BIGINT, VARCHAR, SMALLINT, Integer, Date, ForeignKey, String
+from sqlalchemy import create_engine, Column, BIGINT, VARCHAR, SMALLINT, Integer, Date, ForeignKey, String, desc
 from database import Base
 from passlib.context import CryptContext
 

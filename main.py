@@ -24,24 +24,22 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def register(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = User(Username=form_data.username)
     users = dict(db.query(User.ID, User.Username))
-
-    # проверка на наличие пользователя
-    for id in users:
-        if user.Username == users[id]:
-            raise HTTPException(status_code=409, detail='User is already registered!')
-            
+    
+    schemas.register_check(form_data.username, form_data.password, users)
     user.set_password(form_data.password)
     db.add(user)
     db.commit()
-    return {"msg": "User created"} 
+    return {"msg": "Пользователь зарегистрирован!"} 
 
-@app.post("/token")
+ 
+
+@app.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.Username == form_data.username).first()
     if not user or not user.verify_password(form_data.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Неверный логин или пароль!",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.Username})
@@ -135,11 +133,11 @@ async def get_doctor(doctor_id: int, db: Session = Depends(get_db)):
 
 @app.get('/diagnosis')
 async def get_diagnosis(db: Session = Depends(get_db)):
-    return db.query(Diagnosis).all()
+    return db.query(Diagnosis).order_by(Diagnosis.Name).all()
 
-@app.get('/symptoms')
+@app.get('/symptoms') 
 async def get_symptoms(db: Session = Depends(get_db)):
-    return db.query(Symptoms).all()
+    return db.query(Symptoms).order_by(Symptoms.Name).all()
 
 @app.get('/inspections/{patient_id}')
 async def get_inspections(patient_id: int, db: Session = Depends(get_db)):
@@ -149,7 +147,7 @@ async def get_inspections(patient_id: int, db: Session = Depends(get_db)):
                 .join(Patient, Inspection.ID_patient == Patient.ID)\
                 .join(Diagnosis, Inspection.ID_diagnosis == Diagnosis.ID)\
                 .join(Symptoms, Inspection.ID_symptoms == Symptoms.ID)\
-                .where(Inspection.ID_patient == patient_id).all()
+                .where(Inspection.ID_patient == patient_id).order_by(desc(Inspection.Date)).all()
     inspection_list = [
         {
             "ID": inspection.ID,
