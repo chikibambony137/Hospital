@@ -49,12 +49,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
 async def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
-# @app.get("/users/me")
-# async def read_users_me(token: str = Depends(oauth2_scheme)):
-#     payload = verify_token(token)
-#     if payload is None:
-#         raise HTTPException(status_code=401, detail="Invalid token")
-#     return {"username": payload["sub"]}
+@app.get("/users/me")
+async def read_users_me(token: str = Depends(oauth2_scheme)):
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return {"username": payload}
 
 @app.get("/")
 async def root():
@@ -141,7 +141,8 @@ async def get_symptoms(db: Session = Depends(get_db)):
 
 @app.get('/inspections/{patient_id}')
 async def get_inspections(patient_id: int, db: Session = Depends(get_db)):
-    query = db.query(Inspection, Place.Name, Doctor.Surname, Patient.Surname, Diagnosis.Name, Symptoms.Name)
+    query = db.query(Inspection, Place.Name, Doctor.Surname, Doctor.Name, Doctor.Middle_name,
+                     Patient.Surname, Patient.Name, Patient.Middle_name, Diagnosis.Name, Symptoms.Name)
     query = query.join(Place, Inspection.ID_place == Place.ID)\
                 .join(Doctor, Inspection.ID_doctor == Doctor.ID)\
                 .join(Patient, Inspection.ID_patient == Patient.ID)\
@@ -153,13 +154,18 @@ async def get_inspections(patient_id: int, db: Session = Depends(get_db)):
             "ID": inspection.ID,
             "Place": place_name,
             "Date": inspection.Date,
-            "Doctor": doctor_surname,
-            "Patient": patient_surname,
+            "Doctor_surname": doctor_surname,
+            "Doctor_name": doctor_name,
+            "Doctor_middle_name": doctor_middle_name,
+            "Patient_surname": patient_surname,
+            "Patient_name": patient_name,
+            "Patient_middle_name": patient_middle_name,
             "Diagnosis": diagnosis_name,
             "Symptoms": symptoms_name,
             "Prescription": inspection.Prescription
         }
-        for inspection, place_name, doctor_surname, patient_surname, diagnosis_name, symptoms_name in query
+        for inspection, place_name, doctor_surname, doctor_name, doctor_middle_name,
+        patient_surname, patient_name, patient_middle_name, diagnosis_name, symptoms_name in query
     ]
     return inspection_list
 

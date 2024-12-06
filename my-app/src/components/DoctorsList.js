@@ -39,7 +39,7 @@ const DoctorsList = ({ user }) => {
        
         <div className="patient-list">
  
-            <h2>Список врачей</h2>
+            <h2>Поиск</h2>
             <input 
                 type="text" 
                 placeholder="Фамилия" 
@@ -59,7 +59,10 @@ const DoctorsList = ({ user }) => {
                 onChange={(e) => setMiddle_Name(e.target.value)} 
             />
             <br/>
-            <button className="bth-doctor_list" onClick={handleBack}>🠔</button>
+
+            <button className="btn" onClick={handleBack}>Назад</button>
+
+            <h2>Список врачей</h2>
             <ul>
                 {filteredDoctors.map((doctor) => (
                     <li key={doctor.ID} onClick={() => setSelectedDoctor(doctor)}>

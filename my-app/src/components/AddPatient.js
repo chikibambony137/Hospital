@@ -10,6 +10,7 @@ const AddPatient = () => {
     const [Age, setAge] = useState('');
     const [ID_sex, setSex] = useState('');
     
+    const handleBack = () => {window.history.back();}
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,9 +23,9 @@ const AddPatient = () => {
             setAddress('');
             setAge('');
             setSex(0);
-            alert('Пациент успешно добавлен!' + ID_sex)
+            alert('Пациент успешно добавлен!')
         } catch (error) {
-            console.error(error);
+            alert("Ошибка! Неверно введенные данные!");
         }
     };
 
@@ -43,8 +44,10 @@ const AddPatient = () => {
                 <option value="1">Женский</option>
                 <option value="2">Мужской</option>
             </select>
-            
+
             <button type="submit" onClick={handleSubmit} className="btn">Добавить</button>
+            <button className="btn" onClick={handleBack}>Назад</button>
+            
         </div>
     );
 };

@@ -5,7 +5,7 @@ import DoctorsList from './components/DoctorsList';
 import PatientsList from './components/PatientsList'; 
 import styles from './styles.css'
 import AddPatient from './components/AddPatient';
-import PatientInspections from './components/PatientInspections';
+import InspectionsList from './components/InspectionsList';
  
 const App = () => { 
     return ( 
@@ -15,7 +15,7 @@ const App = () => {
                 <Route path="/doctors" element={<DoctorsList />} /> 
                 <Route path="/patients" element={<PatientsList />} />
                 <Route path="/patients/add" element={<AddPatient />} /> 
-                <Route path="/inspections" element={<PatientInspections />} />
+                <Route path="/inspections" element={<InspectionsList />} />
             </Routes> 
         </Router> 
     ); 

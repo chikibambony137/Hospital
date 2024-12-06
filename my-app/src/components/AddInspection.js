@@ -49,7 +49,7 @@ const AddInspection = ({ patientId }) => {
             setPrescription('');
             window.location.reload()
         } catch (error) {
-            alert('hui' + error)
+            alert('Ошибка! Неверно введенные данные!')
         }
     };
 

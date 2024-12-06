@@ -8,7 +8,7 @@ const PatientInfo = ({ patient, onShowPatients }) => {
     }; 
     return (
         <div className="patient-info">
-            <h3>Информация о пациенте</h3>
+            <h3>Информация о пациенте №{patient.ID}</h3>
             <p><strong>ФИО:</strong> {patient.Surname} {patient.Name} {patient.Middle_name}</p>
             <p><strong>Телефон:</strong> {patient.Phone_number}</p>
             <p><strong>Адрес:</strong> {patient.Address}</p>
