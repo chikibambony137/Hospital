@@ -9,36 +9,51 @@ const DoctorsList = ({ user }) => {
     const [Middle_name, setMiddle_Name] = useState('');
 
     const [doctors, setDoctors] = useState([]);
+    const [filteredDoctors, setFilteredDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [showPatients, setShowPatients] = useState(false);
-    const handleBack = () => {window.history.back();}
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const handleBack = () => {
+        window.history.back();
+    };
 
     useEffect(() => {
         const searchDoctors = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/doctors');
+                const response = await axios.get('http://localhost:8000/doctors', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setDoctors(response.data);
-            } catch (error) {
+                setFilteredDoctors(response.data);
+                setLoading(false);
+            } catch (error) { 
+                setError('Не удалось загрузить врачей');
+                setLoading(false);
                 console.error(error);
             }
         };
         searchDoctors();
-    }, []); 
+    }, []);
 
     const handleSearch = () => {
-        return doctors.filter(doctor => 
+        const filtered = doctors.filter(doctor => 
             doctor.Surname.toLowerCase().includes(Surname.toLowerCase()) &&
             doctor.Name.toLowerCase().includes(Name.toLowerCase()) &&
             doctor.Middle_name.toLowerCase().includes(Middle_name.toLowerCase())
         );
+        setFilteredDoctors(filtered);
     };
 
-    const filteredDoctors = handleSearch();
+    useEffect(() => {
+        handleSearch();
+    }, [Surname, Name, Middle_name, doctors]);
 
     return (
-       
         <div className="patient-list">
- 
             <h2>Поиск</h2>
             <input 
                 type="text" 
@@ -63,24 +78,28 @@ const DoctorsList = ({ user }) => {
             <button className="btn" onClick={handleBack}>Назад</button>
 
             <h2>Список врачей</h2>
-            <ul>
-                {filteredDoctors.map((doctor) => (
-                    <li key={doctor.ID} onClick={() => setSelectedDoctor(doctor)}>
-                        {doctor.Surname} {doctor.Name} {doctor.Middle_name}
-                    </li>
-                ))}
-            </ul>
+            {loading && <p>Загрузка...</p>}
+            {error && <p>{error}</p>}
+            {!loading && !error && (
+                <ul>
+                    {filteredDoctors.map((doctor) => (
+                        <li key={doctor.ID} onClick={() => setSelectedDoctor(doctor)}>
+                            {doctor.Surname} {doctor.Name} {doctor.Middle_name}
+
+                            </li>
+                    ))}
+                </ul>
+            )}
             <div className="patient-selected">
-            {selectedDoctor && (
-                <DoctorInfo doctor={selectedDoctor} onShowPatients={() => setShowPatients(true)} />
-            )}
-            {showPatients && selectedDoctor && (
-                <PatientsList doctorId={selectedDoctor.id} onBack={() => setShowPatients(false)} />
-            )}
+                {selectedDoctor && (
+                    <DoctorInfo doctor={selectedDoctor} onShowPatients={() => setShowPatients(true)} />
+                )}
+                {showPatients && selectedDoctor && (
+                    <PatientsList doctorId={selectedDoctor.id} onBack={() => setShowPatients(false)} />
+                )}
             </div>
         </div>
-        );
-    };
-    
-    export default DoctorsList;
-    
+    );
+};
+
+export default DoctorsList;

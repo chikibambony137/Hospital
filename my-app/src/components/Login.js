@@ -1,15 +1,18 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import axios from 'axios'; 
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => { 
     const [Username, setUsername] = useState(''); 
     const [Password, setPassword] = useState(''); 
     const [Username2, setUsername2] = useState(''); 
     const [Password2, setPassword2] = useState(''); 
+
+    const [Role, setRole] = useState('');
+    const [Role2, setRole2] = useState('');
     const navigate = useNavigate(); 
 
-    const handleLogin = async () => { 
+    const handleLogin = async () => {
         try {
             const response = await axios.post('http://localhost:8000/login', new URLSearchParams({
                 username: Username,
@@ -19,15 +22,30 @@ const Login = () => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
-            navigate('/doctors')
+
+            // Сохраняем токен в localStorage
+            localStorage.setItem('token', response.data.access_token);
+            setRole(response.data.role);
+            localStorage.setItem('role', response.data.role);
         } catch (error) {
-            alert('Ошибка! ' + (error.response?.data?.detail || '')); 
-        } 
+            alert('Ошибка! ' + (error.response?.data?.detail || ''));
+        }
     };
+
+    // Эффект для отслеживания изменений роли
+    useEffect(() => {
+        if (Role !== null) {
+            if (Role === 'admin' || Role === 'doctor') {
+                navigate('/doctors');
+            } else if (Role === 'patient') {
+                navigate('/patients');
+            }
+        }
+    }, [Role, navigate]);
 
     const handleRegister = async () => { 
         try {
-            const response = await axios.post('http://localhost:8000/register', new URLSearchParams({
+            const response = await axios.post('http://localhost:8000/register/' + Role2, new URLSearchParams({
                 username: Username2,
                 password: Password2,
             }), {
@@ -35,7 +53,7 @@ const Login = () => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
-            alert('Пользователь зарегистрирован!')
+            alert('Пользователь зарегистрирован!');
         } catch (error) {
             alert('Ошибка регистрации: ' + (error.response?.data?.detail || '')); 
         } 
@@ -48,10 +66,16 @@ const Login = () => {
             <input type="text" placeholder="Пароль" value={Password} onChange={e => setPassword(e.target.value)} /> <br/>
             <button className='login' onClick={handleLogin}>Войти</button> <br/>
             
-
             <h1>Регистрация</h1> 
             <input type="text" placeholder="Логин" value={Username2} onChange={e => setUsername2(e.target.value)} /> <br/>
             <input type="text" placeholder="Пароль" value={Password2} onChange={e => setPassword2(e.target.value)} /> <br/>
+
+            <select value={Role2} onChange={(e) => setRole2(e.target.value)} required>
+                <option value="">Пациент или врач?</option>
+                <option value="patient">Пациент</option>
+                <option value="doctor">Врач</option>
+            </select>
+
             <button className='login' onClick={handleRegister}>Зарегистрироваться</button>
         </div>
     );

@@ -16,7 +16,11 @@ const PatientsList = () => {
     useEffect (() => {
         const searchPatients = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/patients');
+                const response = await axios.get('http://localhost:8000/patients', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setPatients(response.data);
             } catch (error) {
                 alert(error);

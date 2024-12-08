@@ -4,10 +4,12 @@ import re
 from enum import Enum
 from fastapi import HTTPException
 
+# Класс для представления пола пациента
 class Sex(BaseModel):
     ID: int
     Name: str
-    
+
+# Класс для представления врача
 class Doctor(BaseModel):
     ID: int
     Surname: str
@@ -17,6 +19,7 @@ class Doctor(BaseModel):
     ID_section: int
     Experience: str
 
+# Класс для представления пациента
 class Patient(BaseModel):
     ID: int
     Surname: str
@@ -32,11 +35,13 @@ class Patient(BaseModel):
     class Config:
         orm_mode = True
 
+# Класс для представления раздела
 class Section(BaseModel):
     ID: int
     ID_patient: int
     Number: int
 
+# Класс для представления осмотра
 class Inspection(BaseModel):
     ID: int
     ID_place: int
@@ -47,23 +52,26 @@ class Inspection(BaseModel):
     ID_diagnosis: int
     Prescription: str
 
+# Класс для представления местоположения осмотра
 class Place(BaseModel):
     ID: int
     Name: str
 
+# Класс для представления симптомов
 class Symptoms(BaseModel):
     ID: int
     Name: str
 
+# Класс для представления диагноза
 class Diagnosis(BaseModel):
     ID: int
     Name: str
 
-
+# Класс для добавления нового пациента
 class PatientAdd(BaseModel):
     Surname: str = Field(default='Иванов', min_length=1, max_length=50, description="Фамилия пациента, от 1 до 50 символов")
     Name: str = Field(default='Иван', min_length=1, max_length=50, description="Имя пациента, от 1 до 50 символов")
-    Middle_name: str = Field(default='Иванович', min_length=1, max_length=50, description="Отчество пациента, от 1 до 50 символов, необязательно")
+    Middle_name: str = Field(min_length=1, max_length=50, description="Отчество пациента, от 1 до 50 символов, необязательно")
     Phone_number: str = Field(default='+77777777777', description="Номер телефона в международном формате, начинающийся с '+'")
     Address: str = Field(default='г. Москва, ул. Пушкина, 15, кв. 52', min_length=5, max_length=200, description="Адрес пациента, не более 200 символов")
     Age: int = Field(default=0, ge=0, le=120, description="Возраст пациента ()")
@@ -75,7 +83,8 @@ class PatientAdd(BaseModel):
         if not re.match(r'^\+\d{1,15}$', values):
             raise ValueError('Номер телефона должен начинаться с "+" и содержать от 1 до 15 цифр')
         return values
-    
+
+# Класс для добавления нового врача
 class DoctorAdd(BaseModel):
     Surname: str = Field(default=..., min_length=1, max_length=50, description="Фамилия врача, от 1 до 50 символов")
     Name: str = Field(default=..., min_length=1, max_length=50, description="Имя врача, от 1 до 50 символов")
@@ -90,7 +99,8 @@ class DoctorAdd(BaseModel):
         if not re.match(r'^\+\d{1,15}$', values):
             raise ValueError('Номер телефона должен начинаться с "+" и содержать от 1 до 15 цифр')
         return values
-    
+
+# Класс для добавления новой записи осмотра
 class InspectionAdd(BaseModel):
     Date: date = Field(default="2000-01-01", description="Дата осмотра")
     ID_place: int = Field(default=1, ge=1, description="ID места осмотра")
@@ -100,7 +110,18 @@ class InspectionAdd(BaseModel):
     ID_diagnosis: int = Field(default=1, ge=1, description="ID диагноза")
     Prescription: str = Field(default="...", min_length=1, max_length=300, description="Предписания пациенту")
 
-def register_check(username, password, users):
+def register_check(username: str, password: str, users: dict):
+    """
+    Функция для проверки вводимых данных для регистрации пользователя.
+
+    Аргументы:
+    username (str): имя пользователя.
+    password (str): пароль пользователя.
+    users (dict): список уже зарегистрированных пользователей.
+
+    Возвращаемое значение:
+    True, если вводные данные прошли все проверки.
+    """
     
     # Убираем лишние пробелы
     username = username.strip()  

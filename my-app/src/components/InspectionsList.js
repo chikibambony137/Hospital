@@ -8,11 +8,16 @@ const PatientInspections = () => {
     const [expandedInspectionIds, setExpandedInspectionIds] = useState([]); // Массив для хранения раскрытых осмотров
     const location = useLocation();
     const { patientId } = location.state || {};
+    const [IsShown, setIsShown] = useState(false);
     const handleBack = () => { window.history.back(); }
 
     const fetchInspections = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/inspections/${patientId}`);
+            const response = await axios.get(`http://localhost:8000/inspections/${patientId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setInspections(response.data);
         } catch (error) {
             alert('Ошибка! ' + error);
@@ -33,8 +38,15 @@ const PatientInspections = () => {
         }
     };
 
+    const centerStyle = {
+        width: 500,
+        marginLeft: '400px'
+    };
+
+    const userRole = localStorage.getItem('role');
+
     return (
-        <div className="patient-list">
+        <div className="patient-list" style={userRole === 'patient' ? centerStyle : undefined}>
             <h2>Осмотры пациента №{patientId}</h2>
             <button className="btn" onClick={handleBack}>Назад</button>
             <ul>
@@ -57,9 +69,11 @@ const PatientInspections = () => {
                     </li>
                 ))}
             </ul>
-            <div>
-                <AddInspection patientId={patientId} onExamAdded={fetchInspections} />
-            </div>
+            {userRole !== 'patient' && (
+                <div>
+                    <AddInspection patientId={patientId} onExamAdded={fetchInspections} />
+                </div>
+            )}
         </div>
     );
 };

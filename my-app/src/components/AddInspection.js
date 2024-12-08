@@ -20,11 +20,23 @@ const AddInspection = ({ patientId }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const symptomsResponse = await axios.get('http://localhost:8000/symptoms');
+                const symptomsResponse = await axios.get('http://localhost:8000/symptoms', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setSymptomOptions(symptomsResponse.data);
-                const diagnosesResponse = await axios.get('http://localhost:8000/diagnosis');
+                const diagnosesResponse = await axios.get('http://localhost:8000/diagnosis', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setDiagnosisOptions(diagnosesResponse.data);
-                const doctorResponse = await axios.get('http://localhost:8000/doctors');
+                const doctorResponse = await axios.get('http://localhost:8000/doctors', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setDoctorOptions(doctorResponse.data);
                 setPatient(patientId);
             } catch (error) {
@@ -39,7 +51,11 @@ const AddInspection = ({ patientId }) => {
         try {
             
             await axios.post('http://localhost:8000/inspections/add', { Date, ID_place, ID_doctor, ID_patient,
-                                            ID_symptoms, ID_diagnosis, Prescription });
+                                            ID_symptoms, ID_diagnosis, Prescription }, {
+                                                headers: {
+                                                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                                                },
+                                            });
             // Сбросить поля формы после отправки
             setDate('');
             setPlace('');
