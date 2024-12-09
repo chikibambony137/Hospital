@@ -4,13 +4,17 @@ import AddInspection from './AddInspection';
 import { useLocation } from 'react-router-dom';
 
 const PatientInspections = () => {
+    
+    //Объявление констант списка осмотров, а также для передачи id пациента
     const [inspections, setInspections] = useState([]);
     const [expandedInspectionIds, setExpandedInspectionIds] = useState([]); // Массив для хранения раскрытых осмотров
     const location = useLocation();
     const { patientId } = location.state || {};
-    const [IsShown, setIsShown] = useState(false);
+
+    //Объявление константы для перехода на предыдущую страницу
     const handleBack = () => { window.history.back(); }
 
+    //Отправка запроса к базе данных через FastAPI для получения списка осмотров конкретного пациента
     const fetchInspections = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/inspections/${patientId}`, {
@@ -24,10 +28,12 @@ const PatientInspections = () => {
         }
     };
 
+    //Вызов функции для получения списка осмотров
     useEffect(() => {
         fetchInspections();
     }, [patientId]);
 
+    //Функция для отображения подробной информации об осмотре
     const handleToggleDescription = (id) => {
         if (expandedInspectionIds.includes(id)) {
             // Если осмотр уже раскрыт, то удаляем его из списка раскрытых
@@ -45,6 +51,7 @@ const PatientInspections = () => {
 
     const userRole = localStorage.getItem('role');
 
+    //Отображение списка осмотра конкретного пациента
     return (
         <div className="patient-list" style={userRole === 'patient' ? centerStyle : undefined}>
             <h2>Осмотры пациента №{patientId}</h2>

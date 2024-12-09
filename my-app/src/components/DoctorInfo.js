@@ -2,10 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
 const DoctorInfo = ({ doctor, onShowPatients }) => {
+    
+    //Объявление констант для перехода в раздел пациентов
     const navigate = useNavigate();
     const handle = async () => { 
             navigate('/patients'); 
     }; 
+    
+    //Окно вывода информации о враче
     return (
         <div className="doctor-info">
             <h3>Информация о враче №{doctor.ID}</h3>

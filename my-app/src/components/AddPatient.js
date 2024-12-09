@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AddPatient = () => {
+    
+    //Объявление констант для данных о пациенте
     const [Surname, setSurname] = useState('');
     const [Name, setName] = useState('');
     const [Middle_name, setMiddle_name] = useState('');
@@ -10,8 +12,10 @@ const AddPatient = () => {
     const [Age, setAge] = useState('');
     const [ID_sex, setSex] = useState('');
     
+    //Объявление функции для перехода на предыдущую страницу
     const handleBack = () => {window.history.back();}
 
+    //Отправка запроса к базе данных через FastAPI для добавления данных о пациенте
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -20,6 +24,7 @@ const AddPatient = () => {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
+            //Сброс полей после добавления
             setSurname('');
             setName('');
             setMiddle_name('');
@@ -33,6 +38,7 @@ const AddPatient = () => {
         }
     };
 
+    //Отображение формы для добавления пациента
     return (
         <div className="patient-list">
             <h3>Добавить пациента</h3>

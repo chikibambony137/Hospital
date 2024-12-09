@@ -47,6 +47,7 @@ select {
 input[type="text"],
 input[type="number"],
 input[type="date"],
+input[type="password"],
 
 textarea {
     color: #777;
@@ -82,6 +83,8 @@ option {
 	transition: .2s ease-in;
 	cursor: pointer;
     font: Ubuntu Sans;
+    box-shadow: 0 5px 15px 0 #7ec0aa;
+transition: 0.5s;
 }
         
 
@@ -90,14 +93,8 @@ option {
     background: #7ec0aa;
         -webkit-animation: rubberBand 0.6s ease;
         animation: rubberBand 0.6s ease;
-        
-        @keyframes rubberBand {
-        0% {transform: scale(1);}
-        30% {transform: scaleX(1.05) scaleY(0.85);}
-        40% {transform: scaleX(0.85) scaleY(1.10);}
-        60% {transform: scaleX(1.05) scaleY(0.95);}
-        100% {transform: scale(1);}
-        }
+        transform: translate(0,-3px);
+box-shadow: 0 20px 40px 0 #7ec0aa;
 }
 
 
@@ -174,20 +171,16 @@ li:hover {
 	transition: .2s ease-in;
 	cursor: pointer;
     font: Ubuntu Sans;
+    box-shadow: 0 5px 15px 0 #7ec0aa;
+    transition: 0.5s;
 }
 .login:hover {
     
     background: #7ec0aa;
-        -webkit-animation: rubberBand 0.6s ease;
-        animation: rubberBand 0.6s ease;
+
+        transform: translate(0,-3px);
+        box-shadow: 0 20px 40px 0 #7ec0aa;
         
-        @keyframes rubberBand {
-        0% {transform: scale(1);}
-        30% {transform: scaleX(1.05) scaleY(0.85);}
-        40% {transform: scaleX(0.85) scaleY(1.10);}
-        60% {transform: scaleX(1.05) scaleY(0.95);}
-        100% {transform: scale(1);}
-        }
 }
 
 .LoginForm {
@@ -224,7 +217,8 @@ li:hover {
 	height: 40px;
 	margin: 30px auto;
 	justify-content: center;
-
+    box-shadow: 0 5px 15px 0 #7ec0aa;
+    transition: 0.5s;
 	color: #363636;
 	background: #a6e6a7;
 	font-size: 17px;
@@ -242,16 +236,9 @@ li:hover {
 .list:hover {
     
     background: #7ec0aa;
-        -webkit-animation: rubberBand 0.6s ease;
-        animation: rubberBand 0.6s ease;
         
-        @keyframes rubberBand {
-        0% {transform: scale(1);}
-        30% {transform: scaleX(1.05) scaleY(0.85);}
-        40% {transform: scaleX(0.85) scaleY(1.10);}
-        60% {transform: scaleX(1.05) scaleY(0.95);}
-        100% {transform: scale(1);}
-        }
+    transform: translate(0,-3px);
+    box-shadow: 0 20px 40px 0 #7ec0aa;
 }
 
 .inspection-add-form {
@@ -280,7 +267,8 @@ li:hover {
     width: 20%;
 	height: 10%;
 	justify-content: left;
-
+    box-shadow: 0 5px 15px 0 #7ec0aa;
+    transition: 0.5s;
 	color: #363636;
 	background: #a6e6a7;
 	font-size: 35px;
@@ -299,14 +287,7 @@ li:hover {
 .bth-doctor_list:hover{
 
     background: #7ec0aa;
-    -webkit-animation: rubberBand 0.6s ease;
-    animation: rubberBand 0.6s ease;
-    
-    @keyframes rubberBand {
-    0% {transform: scale(1);}
-    30% {transform: scaleX(1.05) scaleY(0.85);}
-    40% {transform: scaleX(0.85) scaleY(1.10);}
-    60% {transform: scaleX(1.05) scaleY(0.95);}
-    100% {transform: scale(1);}
-    }
+  
+    transform: translate(0,-3px);
+    box-shadow: 0 20px 40px 0 #7ec0aa;
 }

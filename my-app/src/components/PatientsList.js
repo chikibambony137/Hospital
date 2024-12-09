@@ -4,15 +4,22 @@ import PatientInfo from './PatientInfo';
 import { useNavigate } from 'react-router-dom'; 
 
 const PatientsList = () => {
+    
+    //Объявление констант для данных о пациенте
     const [Surname, setSurname] = useState('');
     const [Name, setName] = useState('');
     const [Middle_name, setMiddle_Name] = useState('');
+    
+    //Объявление констант для списка пациентов, выбранного пациента и отображения информации о пациенте
     const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState();
     const [showPatients, setShowPatients] = useState(false);
+    
+    //Объявление функции для перехода на предыдущую страницу
     const navigate = useNavigate();
     const handleBack = () => {window.history.back();}
 
+    //Отправка запроса к базе данных через FastAPI для получения информации о пациентах
     useEffect (() => {
         const searchPatients = async () => {
             try {
@@ -29,6 +36,7 @@ const PatientsList = () => {
         searchPatients();
     }, []);
 
+    //Функция для поиска пациентов
     const handleSearch = () => {
         return patients.filter(patient => 
             patient.Surname.toLowerCase().includes(Surname.toLowerCase()) &&
@@ -37,12 +45,15 @@ const PatientsList = () => {
         );
     };
 
+    //Функция для перехода на страницу добавление пациентов
     const handleAdd = () => {
         navigate('/patients/add')
     };
 
+    //Создание фильтрованного списка
     const filteredPatients = handleSearch();
 
+    //Отображение списка пациентов
     return (
         <div className="patient-list">
             <h2>Список пациентов</h2>

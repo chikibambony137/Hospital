@@ -3,22 +3,29 @@ import axios from 'axios';
 import DoctorInfo from './DoctorInfo';
 import PatientsList from './PatientsList';
 
-const DoctorsList = ({ user }) => {
+const DoctorsList = ({ user }) => {                                    
+    
+    //Объявление констант для данных о врачах
     const [Surname, setSurname] = useState('');
     const [Name, setName] = useState('');
     const [Middle_name, setMiddle_Name] = useState('');
-
+    
+    //Объявление констант для выборки, сортировки и отображения данных                                                                  
     const [doctors, setDoctors] = useState([]);
     const [filteredDoctors, setFilteredDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [showPatients, setShowPatients] = useState(false);
+    
+    //Объявление констант для загрузки и отображения ошибок
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    
+    //Объявление константы для перехода на предыдущую страницу
     const handleBack = () => {
         window.history.back();
     };
-
+    
+    //Обращение к базе данных через FastAPI для вывода списка врачей
     useEffect(() => {
         const searchDoctors = async () => {
             try {
@@ -38,7 +45,8 @@ const DoctorsList = ({ user }) => {
         };
         searchDoctors();
     }, []);
-
+    
+    //Объявление константы для поиска врачей из списка
     const handleSearch = () => {
         const filtered = doctors.filter(doctor => 
             doctor.Surname.toLowerCase().includes(Surname.toLowerCase()) &&
@@ -51,7 +59,8 @@ const DoctorsList = ({ user }) => {
     useEffect(() => {
         handleSearch();
     }, [Surname, Name, Middle_name, doctors]);
-
+    
+    //Объявление формы для поиска врачей из списка
     return (
         <div className="patient-list">
             <h2>Поиск</h2>
@@ -76,7 +85,8 @@ const DoctorsList = ({ user }) => {
             <br/>
 
             <button className="btn" onClick={handleBack}>Назад</button>
-
+            
+            {/* Отображение списка врачей */}
             <h2>Список врачей</h2>
             {loading && <p>Загрузка...</p>}
             {error && <p>{error}</p>}
@@ -90,6 +100,8 @@ const DoctorsList = ({ user }) => {
                     ))}
                 </ul>
             )}
+            
+            {/* Окно для отображения информации о враче */}
             <div className="patient-selected">
                 {selectedDoctor && (
                     <DoctorInfo doctor={selectedDoctor} onShowPatients={() => setShowPatients(true)} />

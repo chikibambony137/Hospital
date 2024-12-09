@@ -2,10 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
 const PatientInfo = ({ patient, onShowPatients }) => {
+   
+    //Объявление константы для перехода на страницу осмотров
     const navigate = useNavigate();
     const handle = async () => { 
             navigate('/inspections', { state: { patientId: patient.ID } }); 
     }; 
+   
+    //Отображение информации о пациентах
     return (
         <div className="patient-info">
             <h3>Информация о пациенте №{patient.ID}</h3>
