@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Confetti from 'react-confetti'
 
 const AddInspection = ({ patientId }) => {
     
@@ -16,6 +17,10 @@ const AddInspection = ({ patientId }) => {
     const [doctorOptions, setDoctorOptions] = useState([]);
     const [symptomOptions, setSymptomOptions] = useState([]);
     const [diagnosisOptions, setDiagnosisOptions] = useState([]);
+
+
+    const [showConfetti, setShowConfetti] = useState(false);
+    const [isRak, setRak] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,15 +60,22 @@ const AddInspection = ({ patientId }) => {
     }, []);
 
     //Отправка запроса к базе данных через FastAPI для добавления осмотра
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => 
+        {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8000/inspections/add', { Date, ID_place, ID_doctor, ID_patient,
-                                            ID_symptoms, ID_diagnosis, Prescription }, {
-                                                headers: {
+            await axios.post('http://localhost:8000/inspections/add', { Date, ID_place, ID_doctor, ID_patient, ID_symptoms, ID_diagnosis, Prescription },
+                                            { headers: {
                                                     Authorization: `Bearer ${localStorage.getItem('token')}`,
-                                                },
+                                                    },
                                             });
+
+            if (ID_diagnosis === '4'){
+                setShowConfetti(true); // Показать конфетти
+                setTimeout(() => setShowConfetti(false), 7000); // Скрыть конфетти через 7 секунд
+            }
+            else {
+                                                
             // Сбросить поля формы после отправки
             setDate('');
             setPlace('');
@@ -71,7 +83,7 @@ const AddInspection = ({ patientId }) => {
             setSymptoms('');
             setDiagnosis('');
             setPrescription('');
-            window.location.reload()
+            window.location.reload()}
         } catch (error) {
             alert('Ошибка! Неверно введенные данные!')
         }
@@ -80,6 +92,7 @@ const AddInspection = ({ patientId }) => {
     //Отображение формы для добавления осмотра пациента
     return (
         <div className="inspection-add-form">
+
             <h3>Добавить осмотр</h3>
             <input type="date" value={Date} onChange={(e) => setDate(e.target.value)} required />
 
@@ -113,6 +126,7 @@ const AddInspection = ({ patientId }) => {
             <input type="text" placeholder="Предписание" value={Prescription} onChange={(e) => setPrescription(e.target.value)} required/>
 
             <button type="submit" onClick={handleSubmit} className="btn">Добавить</button>
+            {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />} {/* Отображение конфетти */}
         </div>
     );
 };
