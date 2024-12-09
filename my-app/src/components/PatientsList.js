@@ -17,10 +17,13 @@ const PatientsList = () => {
     
     //Объявление функции для перехода на предыдущую страницу
     const navigate = useNavigate();
-    const handleBack = () => {window.history.back();}
+    const handleBack = () => {navigate('/');}
 
     //Отправка запроса к базе данных через FastAPI для получения информации о пациентах
     useEffect (() => {
+        
+        window.history.pushState({}, '', '/patients')
+        
         const searchPatients = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/patients', {

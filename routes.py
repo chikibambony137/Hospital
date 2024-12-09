@@ -21,10 +21,18 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """
+    Функция для проверки токена пользователя.
+    Возвращает True, если токен прошел проверку.
+    """
     payload = verify_token(token)
     if payload is None:
         raise HTTPException(status_code=401, detail="Invalid token")
     return payload
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the API!"}
 
 @app.post("/register/{user_role}")
 async def register(user_role: str, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -57,10 +65,6 @@ async def get_users(db: Session = Depends(get_db)):
 @app.get("/users/me")
 async def read_users_me(current_user: dict = Depends(get_current_user)):
     return {"username": current_user}
-
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the API!"}
 
 @app.get("/patients")
 async def get_patients(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
@@ -177,12 +181,3 @@ async def add_inspection(inspection: schemas.InspectionAdd, db: Session = Depend
     db.commit()
     db.refresh(new_inspection)
     return new_inspection
-
-@app.get("/patients_search/{surname}")
-async def search(surname: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    try:
-        patients = db.query(Patient).filter(Patient.Surname == surname).all()
-        return {"data": patients, "success": True}
-    except:
-        return {"data": "Error", "success": False}
-   

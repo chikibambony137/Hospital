@@ -36,6 +36,9 @@ const Login = () => {
 
     // Эффект для отслеживания изменений роли
     useEffect(() => {
+       
+        window.history.pushState({}, '', '/patients')
+        
         if (Role !== null) {
             if (Role === 'admin' || Role === 'doctor') {
                 navigate('/doctors');
