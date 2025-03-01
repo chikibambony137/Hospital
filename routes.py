@@ -85,7 +85,8 @@ async def get_patients(db: Session = Depends(get_db), current_user: dict = Depen
     return patient_list
 
 @app.post("/patients/add", response_model=schemas.PatientAdd)
-async def add_patient(patient: schemas.PatientAdd, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def add_patient(patient: schemas.PatientAdd, db: Session = Depends(get_db), 
+                      current_user: dict = Depends(get_current_user)):
     new_patient = Patient(**patient.model_dump())
     db.add(new_patient)
     db.commit()
@@ -93,7 +94,8 @@ async def add_patient(patient: schemas.PatientAdd, db: Session = Depends(get_db)
     return new_patient
 
 @app.delete('/patients/delete')
-async def remove_patient(ID_patient: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def remove_patient(ID_patient: int, db: Session = Depends(get_db), 
+                         current_user: dict = Depends(get_current_user)):
     deleted_count = db.query(Patient).filter(Patient.ID == ID_patient).delete()
     db.commit()
     if deleted_count == 0:

@@ -19,7 +19,8 @@ const AddPatient = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8000/patients/add', { Surname, Name, Middle_name, Phone_number, Address, Age, ID_sex}, {
+            await axios.post('http://localhost:8000/patients/add', { Surname, Name, Middle_name, 
+                Phone_number, Address, Age, ID_sex}, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

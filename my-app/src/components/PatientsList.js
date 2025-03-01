@@ -22,8 +22,6 @@ const PatientsList = () => {
     //Отправка запроса к базе данных через FastAPI для получения информации о пациентах
     useEffect (() => {
         
-        window.history.pushState({}, '', '/patients')
-        
         const searchPatients = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/patients', {
